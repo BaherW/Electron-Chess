@@ -1,0 +1,11 @@
+@mixin light-theme {
+  @media screen and (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
+    @content;
+  }
+}
+
+@mixin dark-theme {
+  @media screen and (prefers-color-scheme: dark) {
+    @content;
+  }
+}
