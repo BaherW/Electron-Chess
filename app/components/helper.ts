@@ -14,7 +14,7 @@ export function includes(myArray: [number[]], checkArray: number[]):boolean {
     return false;
 }
 
-export function outOfBounds(y, x) {
+export function outOfBounds(y:number, x:number) {
     if (y < 0 || y > 7 || x < 0 || x > 7 ) {
         return true;
     }
@@ -59,8 +59,8 @@ export function spawnPieces(chessBoard:Board):Board {
     /*****/
 
     /* spawn kings */
-    chessBoard.boardArray[0][4][1] = new King(0, 4, "white", "/chesspieces/Chess_klt60.png", "queen")
-    chessBoard.boardArray[7][4][1] = new King(7, 4, "black", "/chesspieces/Chess_kdt60.png", "queen")
+    chessBoard.boardArray[0][4][1] = new King(0, 4, "white", "/chesspieces/Chess_klt60.png", "king")
+    chessBoard.boardArray[7][4][1] = new King(7, 4, "black", "/chesspieces/Chess_kdt60.png", "king")
     /*****/
     return chessBoard;
 }

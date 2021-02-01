@@ -82,22 +82,42 @@
       }
     }
   }
+
+  var flippedBoard = true;
+  function flipBoard() {
+    if (flippedBoard) {
+      flippedBoard = false
+    }
+    else {
+      flippedBoard = true;
+    }
+    
+  }
 </script>
 
 <div>
+  <button on:click={flipBoard}>FLIP BOARD HERE CUNT</button>
   <div class="game-container">
     <div>
       {#each chessBoard.boardArray as row, i}
+
         <div class="row">
           {#each row as cell, j}
+
+            {#if flippedBoard}
+
             {#if ((j + 1) % 2 === 1 && (i + 1) % 2 === 0) || ((j + 1) % 2 === 0 && (i + 1) % 2 === 1)}
               <div on:click={() => {clickHandler(i, j)}} class="cell white"id={chessBoard.boardArray[i][j]}><img src={chessBoard.boardArray[i][j][1].icon}/></div>
             {:else}
               <div
                 on:click={() => {clickHandler(i, j)}} class="cell black"id={chessBoard.boardArray[i][j]}><img src={chessBoard.boardArray[i][j][1].icon}/></div>
             {/if}
+
+            {:else}
+
           {/each}
         </div>
+
       {/each}
     </div>
   </div>
@@ -111,6 +131,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .flipped_board {
+    transform:rotate(180deg)
+
+  }
+
+  .flipped_pieces {
+    transform:scaleY(1);
   }
 
   .row {
