@@ -1,10 +1,13 @@
 <script>
-  import { Board , spawnPieces , includes , emptyPiece } from './components/helper.ts'
-
+  import { spawnPieces , includes ,  } from './components/helper'
+  import {Board } from './components/board'
+  import {emptyPiece} from './components/pieces'
 
 
   var chessBoard = new Board()
   chessBoard = spawnPieces(chessBoard);
+
+
   var piecePicked = false;
   var movedPiece;
   var oldJ = 0;
@@ -32,7 +35,7 @@
 
 
 
- 
+
   function clickHandler(i, j) {
 
     if (piecePicked) {
@@ -49,9 +52,9 @@
 
 
   function pickPiece(i,j) {
-  
+
     piecePicked = true;
-    
+
     movedPiece = chessBoard.boardArray[i][j][1];
     chessBoard.boardArray[i][j][1].findValidMoves(chessBoard.boardArray);
     console.log(chessBoard.boardArray[i][j][1].validMoves);
@@ -75,7 +78,7 @@
       chessBoard.boardArray[i][j][1].position[1] = j;
       chessBoard.boardArray[i][j][1].validMoves = [];
 
-      chessBoard.boardArray[oldI][oldJ][1] = new emptyPiece(oldI , oldJ, "invis" , null, null , false) 
+      chessBoard.boardArray[oldI][oldJ][1] = new emptyPiece(oldI , oldJ, "invis" , null, null , false)
       }
     }
   }
