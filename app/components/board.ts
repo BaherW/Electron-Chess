@@ -3,7 +3,7 @@ import { num2chr } from './helper'
 
 export class Board {
 
-  boardArray:Array<[string,Pieces]> = [];
+  boardArray:Array<[string, Pieces]> = [];
 
   constructor() {
     this.boardArray = this.generateBoard();
