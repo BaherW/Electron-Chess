@@ -9,6 +9,7 @@ export abstract class Pieces {
   icon: string;
   name: string;
   isPiece: boolean = true;
+  validMoves: Array<[any, any]> = [];
 
   constructor(i, j, color, icon, name, isPiece = true) {
     this.position = [i, j];
@@ -18,13 +19,35 @@ export abstract class Pieces {
     this.name = name;
     this.isPiece = isPiece
   }
+
+  public diagnonalMoves(board) {
+    let possibilities:Array<number[]> = [[1 , 1], [1, -1] , [-1 , 1] , [-1,-1]];
+    let [y, x] = this.position;
+
+    for (let k = 0; k < possibilities.length; k++) {
+      let possibleI = possibilities[k][0];
+      let possibleJ = possibilities[k][1];
+      for (let i = 1 ; i < 8 ; i++) {
+        if (outOfBounds(y + i * possibleI, x + i * possibleJ)) {
+          break
+        } else {
+          if (board[y + i * possibleI][x + i * possibleJ][1].isPiece) {
+            this.validMoves.push([y + i * possibleI, x + i * possibleJ])
+            break;
+          }
+          this.validMoves.push([y + i * possibleI, x + i * possibleJ]);
+        }
+      }
+    }
+  }
+
 }
 
 export class emptyPiece extends Pieces {
 }
 
 export class Pawn extends Pieces {
-  validMoves: Array<[any, any]> = [];
+
   isFirstMove = true;
 
   private findValidMoves(board) {
@@ -87,103 +110,100 @@ export class Pawn extends Pieces {
 }
 
 export class Knight extends Pieces {
-  validMoves: Array<[any, any]> = [];
 
   private findValidMoves(board) {
     let [i, j] = this.position;
-    this.validMoves.push([i + 2, j + 1], [i + 2, j - 1], [i + 1, j - 2], [i + 1, j + 2], [i - 2, j + 1], [i - 2, j - 1], [i - 1, j - 2], [i - 1, j + 2])
+    this.validMoves.push([i + 2, j + 1], [i + 2, j - 1], [i + 1, j - 2], [i + 1, j + 2],
+                        [i - 2, j + 1], [i - 2, j - 1], [i - 1, j - 2], [i - 1, j + 2])
   }
 }
 
 export class Bishop extends Pieces {
-  validMoves: Array<[any, any]> = [];
+
+
 
 
   private findValidMoves(board) {
-    let [y, x] = this.position;
+    this.diagnonalMoves(board)
 
 
-    for (let i = 1; i < 8 ; i++) {
-      console.log(this.validMoves)
-      if (outOfBounds(y + i, x + i)) {
-        console.log("Done")
-        break;
-      }
-      else {
-
-        if (board[y + i][x + i][1].isPiece) {
-          this.validMoves.push([i + y , x + i])
-          break;
-        }
-        this.validMoves.push([y + i , x + i]);
-      }
-    }
 
 
-    for (let i = 1; i < 8 ; i++) {
-      if (outOfBounds(y - i, x + i)) {
-        console.log("Done")
-        break;
-      }
-      else {
-
-        if (board[y - i][x + i][1].isPiece) {
-          this.validMoves.push([y - i, x + i])
-          break;
-        }
-        this.validMoves.push([y - i, x + i]);
-      }
-    }
-
-
-    for (let i = 1; i < 8 ; i++) {
-      console.log(this.validMoves)
-      if (outOfBounds(y - i , x - i)) {
-        console.log("Done")
-        break;
-      }
-      else {
-
-        if (board[y - i][x - i][1].isPiece) {
-          this.validMoves.push([y - i , x - i])
-          break;
-        }
-        this.validMoves.push([y - i , x - i]);
-      }
-    }
-
-    for (let i = 1; i < 8 ; i++) {
-      console.log(this.validMoves)
-      if (outOfBounds(y + i , x - i)) {
-        console.log("Done")
-        break;
-      }
-      else {
-        if (board[y + i][x + i][1].isPiece) {
-          this.validMoves.push([y + i , x - i])
-          break;
-        }
-        this.validMoves.push([y + i , x - i]);
-      }
-    }
-
-
-    
-
+    //
+    // for (let i = 1; i < 8 ; i++) {
+    //   console.log(this.validMoves)
+    //   if (outOfBounds(y + i, x + i)) {
+    //     console.log("Done")
+    //     break;
+    //   }
+    //   else {
+    //
+    //     if (board[y + i][x + i][1].isPiece) {
+    //       this.validMoves.push([i + y , x + i])
+    //       break;
+    //     }
+    //     this.validMoves.push([y + i , x + i]);
+    //   }
+    // }
+    //
+    //
+    // for (let i = 1; i < 8 ; i++) {
+    //   if (outOfBounds(y - i, x + i)) {
+    //     console.log("Done")
+    //     break;
+    //   }
+    //   else {
+    //
+    //     if (board[y - i][x + i][1].isPiece) {
+    //       this.validMoves.push([y - i, x + i])
+    //       break;
+    //     }
+    //     this.validMoves.push([y - i, x + i]);
+    //   }
+    // }
+    //
+    //
+    // for (let i = 1; i < 8 ; i++) {
+    //   console.log(this.validMoves)
+    //   if (outOfBounds(y - i , x - i)) {
+    //     console.log("Done")
+    //     break;
+    //   }
+    //   else {
+    //
+    //     if (board[y - i][x - i][1].isPiece) {
+    //       this.validMoves.push([y - i , x - i])
+    //       break;
+    //     }
+    //     this.validMoves.push([y - i , x - i]);
+    //   }
+    // }
+    //
+    // for (let i = 1; i < 8 ; i++) {
+    //   console.log(this.validMoves)
+    //   if (outOfBounds(y + i , x - i)) {
+    //     console.log("Done")
+    //     break;
+    //   }
+    //   else {
+    //     if (board[y + i][x - i][1].isPiece) {
+    //       this.validMoves.push([y + i , x - i])
+    //       break;
+    //     }
+    //     this.validMoves.push([y + i , x - i]);
+    //   }
+    // }
 
   }
 }
 
 export class Rook extends Pieces {
-  validMoves: Array<[any, any]> = [];
 }
 
 export class Queen extends Pieces {
-  validMoves: Array<[any, any]> = [];
 }
 
 export class King extends Pieces {
-  validMoves: Array<[any, any]> = [];
 }
 
 
