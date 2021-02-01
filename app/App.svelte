@@ -1,5 +1,6 @@
 <script>
-  import { Board , Pawn , spawnPieces , includes , emptyPiece } from './components/helper.ts'
+  import { Board , spawnPieces , includes , emptyPiece } from './components/helper.ts'
+
 
 
   var chessBoard = new Board()
@@ -53,6 +54,7 @@
     
     movedPiece = chessBoard.boardArray[i][j][1];
     chessBoard.boardArray[i][j][1].findValidMoves(chessBoard.boardArray);
+    console.log(chessBoard.boardArray[i][j][1].validMoves);
 
     oldJ = j;
     oldI = i;
