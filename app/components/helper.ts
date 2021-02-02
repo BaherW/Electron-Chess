@@ -2,6 +2,7 @@ import {Pawn, Pieces , Bishop , Rook, King , Knight , Queen , emptyPiece} from '
 import {Board} from './board'
 
 
+
 export function num2chr(n: number):string {
     return String.fromCharCode(n+97);
 }
@@ -19,48 +20,91 @@ export function outOfBounds(y:number, x:number) {
         return true;
     }
 }
- 
+
+export function filterList(toBeF, filterArray) {
+
+    for (let i = 0; i < filterArray.length; i++) {
+        for (let j = 0; j < toBeF.length; j++) {
+            if (arraysEqual(filterArray[i], toBeF[j])) {
+                let index = toBeF.indexOf(toBeF[j], 0);
+                if (index > -1) {
+                    toBeF.splice(index, 1);
+                }
+            }
+        }
+    }
+    return toBeF;
+}
 
 export function spawnPieces(chessBoard:Board):Board {
     /* spawn pawns */
     for (let i = 0; i < chessBoard.boardArray[1].length; i++) {
-        chessBoard.boardArray[1][i][1] = new Pawn(1, i, "white", "/chesspieces/Chess_plt60.png" , "pawn", true);
+        chessBoard.boardArray[1][i][1] = new Pawn(1, i, "white", "/chesspieces/wP.png" , "pawn", true);
     }
 
     for (let i = 0; i < chessBoard.boardArray[7].length; i++) {
-        chessBoard.boardArray[6][i][1] = new Pawn(6, i, "black", "/chesspieces/Chess_pdt60.png" , "pawn", true);
+        chessBoard.boardArray[6][i][1] = new Pawn(6, i, "black", "/chesspieces/bP.png" , "pawn", true);
     }
     /*****/
 
     /* spawn knights */
-    chessBoard.boardArray[0][1][1] = new Knight(0, 1, "white", "/chesspieces/Chess_nlt60.png", "knight", true);
-    chessBoard.boardArray[0][6][1] = new Knight(0, 6, "white", "/chesspieces/Chess_nlt60.png", "knight", true);
-    chessBoard.boardArray[7][1][1] = new Knight(7, 1, "black", "/chesspieces/Chess_ndt60.png", "knight", true);
-    chessBoard.boardArray[7][6][1] = new Knight(7, 6, "black", "/chesspieces/Chess_ndt60.png", "knight", true);
+    chessBoard.boardArray[0][1][1] = new Knight(0, 1, "white", "/chesspieces/wN.png", "knight", true);
+    chessBoard.boardArray[0][6][1] = new Knight(0, 6, "white", "/chesspieces/wN.png", "knight", true);
+    chessBoard.boardArray[7][1][1] = new Knight(7, 1, "black", "/chesspieces/bN.png", "knight", true);
+    chessBoard.boardArray[7][6][1] = new Knight(7, 6, "black", "/chesspieces/bN.png", "knight", true);
     /*****/
-
+    
     /* spawn bishops */
-    chessBoard.boardArray[0][2][1] = new Bishop(0, 2, "white", "/chesspieces/Chess_blt60.png", "bishop", true);
-    chessBoard.boardArray[0][5][1] = new Bishop(0, 5, "white", "/chesspieces/Chess_blt60.png", "bishop", true);
-    chessBoard.boardArray[7][2][1] = new Bishop(7, 2, "black", "/chesspieces/Chess_bdt60.png", "bishop", true);
-    chessBoard.boardArray[7][5][1] = new Bishop(7, 5, "black", "/chesspieces/Chess_bdt60.png", "bishop", true);
+    chessBoard.boardArray[0][2][1] = new Bishop(0, 2, "white", "/chesspieces/wB.png", "bishop", true);
+    chessBoard.boardArray[0][5][1] = new Bishop(0, 5, "white", "/chesspieces/wB.png", "bishop", true);
+    chessBoard.boardArray[7][2][1] = new Bishop(7, 2, "black", "/chesspieces/bB.png", "bishop", true);
+    chessBoard.boardArray[7][5][1] = new Bishop(7, 5, "black", "/chesspieces/bB.png", "bishop", true);
     /*****/
 
     /* spawn rooks */
-    chessBoard.boardArray[0][0][1] = new Rook(0, 0, "white", "/chesspieces/Chess_rlt60.png", "rook", true);
-    chessBoard.boardArray[0][7][1] = new Rook(0, 7, "white", "/chesspieces/Chess_rlt60.png", "rook", true);
-    chessBoard.boardArray[7][0][1] = new Rook(7, 0, "black", "/chesspieces/Chess_rdt60.png", "rook", true);
-    chessBoard.boardArray[7][7][1] = new Rook(7, 7, "black", "/chesspieces/Chess_rdt60.png", "rook", true);
+    chessBoard.boardArray[0][0][1] = new Rook(0, 0, "white", "/chesspieces/wR.png", "rook", true);
+    chessBoard.boardArray[0][7][1] = new Rook(0, 7, "white", "/chesspieces/wR.png", "rook", true);
+    chessBoard.boardArray[7][0][1] = new Rook(7, 0, "black", "/chesspieces/bR.png", "rook", true);
+    chessBoard.boardArray[7][7][1] = new Rook(7, 7, "black", "/chesspieces/bR.png", "rook", true);
     /*****/
 
     /* spawn queens */
-    chessBoard.boardArray[0][3][1] = new Queen(0, 3, "white", "/chesspieces/Chess_qlt60.png", "queen")
-    chessBoard.boardArray[7][3][1] = new Queen(7, 3, "black", "/chesspieces/Chess_qdt60.png", "queen")
+    chessBoard.boardArray[0][3][1] = new Queen(0, 3, "white", "/chesspieces/wQ.png", "queen")
+    chessBoard.boardArray[7][3][1] = new Queen(7, 3, "black", "/chesspieces/bQ.png", "queen")
     /*****/
 
     /* spawn kings */
-    chessBoard.boardArray[0][4][1] = new King(0, 4, "white", "/chesspieces/Chess_klt60.png", "king")
-    chessBoard.boardArray[7][4][1] = new King(7, 4, "black", "/chesspieces/Chess_kdt60.png", "king")
+    chessBoard.boardArray[0][4][1] = new King(0, 4, "white", "/chesspieces/wK.png", "king")
+    chessBoard.boardArray[7][4][1] = new King(7, 4, "black", "/chesspieces/bK.png", "king")
     /*****/
     return chessBoard;
+}
+
+
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+  
+    // If you don't care about the order of the elements inside
+    // the array, you should sort both arrays here.
+    // Please note that calling sort on an array will modify that array.
+    // you might want to clone your array first.
+  
+    for (var i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
+
+
+function getKingPos(color, board) {
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            let selectedPiece = board[row][col][1]
+            if(selectedPiece.name === "king" && selectedPiece.color === color) {
+                return [row, col];
+            }
+        }
+    }
 }

@@ -1,4 +1,5 @@
-import { outOfBounds } from './helper'
+import { outOfBounds , filterList , includes} from './helper'
+import {controlledPieces} from './board'
 
 
 export abstract class Pieces {
@@ -64,12 +65,20 @@ export class emptyPiece extends Pieces {
 }
 
 export class Pawn extends Pieces {
+  
 
   isFirstMove = true;
 
   private findValidMoves(board) {
+    this.validMoves = [];
+
     let [i, j] = this.position;
     if (this.color === "black") {
+
+      if (i < 6) {
+        this.isFirstMove = false
+      }
+
       if (j != 7) {
         if (board[i - 1][j + 1][1].isPiece && board[i - 1][j + 1][1].color != this.color) {
           this.validMoves.push([i - 1, j + 1])
@@ -89,16 +98,21 @@ export class Pawn extends Pieces {
           this.validMoves.push([i - 2, j]);
         }
 
-        this.isFirstMove = false;
       }
       else {
         if (!board[i - 1][j][1].isPiece) {
           this.validMoves.push([i - 1, j]);
         }
       }
+
     }
     else {
       if (this.color === "white") {
+
+        if (i > 1) {
+          this.isFirstMove = false
+        }
+
         if (j != 7) {
           if (board[i + 1][j + 1][1].isPiece && board[i + 1][j + 1][1].color != this.color) {
             this.validMoves.push([i + 1, j + 1])
@@ -116,8 +130,6 @@ export class Pawn extends Pieces {
           if (!board[i + 2][j][1].isPiece) {
             this.validMoves.push([i + 2, j]);
           }
-
-          this.isFirstMove = false;
         }
         else {
           if (!board[i + 1][j][1].isPiece) {
@@ -128,36 +140,76 @@ export class Pawn extends Pieces {
     }
   }
 
+  private getPawnControled(board, color) {
+    let [y, x] = this.position;
+    let results = []
 
+    if (this.color == "white") {
+      if (!outOfBounds(y+1, x+1)) {
+        if (board[y+1][x+1][1].color != color) {
+          results.push([y+1, x+1])
+        }
+      }
+      if (!outOfBounds(y+1, x-1)) {
+        if (board[y+1][x-1][1].color != color) {
+          results.push([y+1, x-1])
+        }
+      }
+    }
+    if (this.color == "black") {
+      if (!outOfBounds(y-1, x+1)) {
+        if (board[y-1][x+1][1].color != color) {
+          results.push([y-1, x+1])
+        }
+      }
+      if (!outOfBounds(y-1, x-1)) {
+        if (board[y-1][x-1][1].color != color) {
+          results.push([y-1, x-1])
+        }
+      }
 
-
-
+    }
+    return results;
+  }
 }
 
 export class Knight extends Pieces {
+  
 
   private findValidMoves(board) {
+    this.validMoves = [];
     let [i, j] = this.position;
-    this.validMoves.push([i + 2, j + 1], [i + 2, j - 1], [i + 1, j - 2], [i + 1, j + 2],
-      [i - 2, j + 1], [i - 2, j - 1], [i - 1, j - 2], [i - 1, j + 2])
+    let possibleValid = [[i + 2, j + 1], [i + 2, j - 1], [i + 1, j - 2], [i + 1, j + 2],[i - 2, j + 1], [i - 2, j - 1], [i - 1, j - 2], [i - 1, j + 2]]
+
+    for (let p = 0; p < possibleValid.length; p++) {
+      if (!outOfBounds(possibleValid[p][0], possibleValid[p][1])) {
+        if (board[possibleValid[p][0]][possibleValid[p][1]][1].color != this.color) {
+          this.validMoves.push([possibleValid[p][0], possibleValid[p][1]])
+        }
+      }
+    }
   }
 }
+
 
 export class Bishop extends Pieces {
 
   private findValidMoves(board) {
+    this.validMoves = [];
     this.diagnonalMoves(board)
   }
 }
 
 export class Rook extends Pieces {
   private findValidMoves(board) {
+    this.validMoves = [];
     this.straightMoves(board)
   }
 }
 
 export class Queen extends Pieces {
   private findValidMoves(board) {
+    this.validMoves = [];
     this.diagnonalMoves(board);
     this.straightMoves(board);
   }
@@ -167,6 +219,7 @@ export class King extends Pieces {
   inCheck:boolean = false;
   hasMoved:boolean = false;
   validMoves = [];
+  invalidSquares = [];
   
   private countNeighbours(board) {
     //Add all 8 neighbours - the out of bound neighbours into validMoves
@@ -181,21 +234,39 @@ export class King extends Pieces {
           this.validMoves.push([y +possibleY[p], x + possibleX[p]]);
         }
       }
-
     }
   }
 
-  
   private findValidMoves(board) {
+    this.validMoves = [];
     this.countNeighbours(board);
+
+    if (this.color == "white") {
+      let blackControlledSquares = controlledPieces("black" , board) // we do rec here... black controlled calls white king which calls black control again
+
+      this.validMoves = filterList(this.validMoves, blackControlledSquares );
+    }
+
+    if (this.color == "black") {
+      let whiteControlledSquares = controlledPieces("white" , board) 
+
+      this.validMoves = filterList(this.validMoves, whiteControlledSquares );
+    }
   }
 
-  // private findValidMoves(board) {
-  //   const filteredArray = array1.filter(value => array2.includes(value));
-  // }
 
+  private checkedKing(controledSquares , checkedKing) {
+    let [y, x] = this.position;
 
+    if (includes(controledSquares , this.position)) {
+      this.inCheck = true;
+      checkedKing = true;
+    }
+    else {
+      this.inCheck = false;
+      checkedKing = false;
+    }
+  }
 
 }
-
 
