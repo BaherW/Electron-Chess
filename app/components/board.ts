@@ -20,3 +20,64 @@ export class Board {
     return tempArray;
   }
 }
+<<<<<<< Updated upstream
+=======
+
+
+export function controlledPieces(color, board) {
+  let controlledSquares = [];
+
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      let selectedPiece = board[row][col][1]
+      if (selectedPiece.color === color) {
+
+        if (selectedPiece.name === "pawn") {
+          let pawnOptions = selectedPiece.getPawnControled(board, color)
+
+          if (pawnOptions.length === 1) {
+            controlledSquares.push(pawnOptions[0]);
+          }
+          else {
+            controlledSquares.push(pawnOptions[0]);
+            controlledSquares.push(pawnOptions[1]);
+          }
+        }
+
+        else {
+          if (selectedPiece.name === "king") {
+            console.log("King")
+            board[row][col][1].countNeighbours(board)
+          }
+          else {
+            console.log("something else")
+            board[row][col][1].findValidMoves(board)
+          }
+
+          if (board[row][col][1].validMoves.length > 0) {
+            if (board[row][col][1].validMoves.length === 1) {
+              controlledSquares.push(board[row][col][1].validMoves);
+            }
+
+            else {
+              for (let validMove = 0; validMove < board[row][col][1].validMoves.length; validMove++) {
+                controlledSquares.push(board[row][col][1].validMoves[validMove]);
+              }
+            }
+          }
+        }
+
+
+      }
+    }
+  }
+  let tmp = []
+  return (controlledSquares.filter(function (v) {
+    if (tmp.indexOf(v.toString()) < 0) {
+        tmp.push(v.toString());
+        return v;
+    }
+  }))
+
+}
+>>>>>>> Stashed changes
