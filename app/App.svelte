@@ -125,23 +125,6 @@
       }
     }
   }
-
-
-
-
-
-  var flippedBoard = true;
-  function flipBoard() {
-    if (flippedBoard) {
-      flippedBoard = false
-    }
-    else {
-      flippedBoard = true;
-    }
-    
-  }
-
-
     
 </script>
 
@@ -170,6 +153,7 @@
 </main>
 
 <style>
+
   main {
     padding-top: 1.5rem;
   }
@@ -181,13 +165,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
   }
-
 
   .this_div {
     -webkit-box-shadow: 0px 0px 15px 4px rgba(0,0,0,0.53); 
     box-shadow: 0px 0px 15px 4px rgba(0,0,0,0.53);
+    cursor: pointer;
   }
   .flipped_board {
     transform:rotate(180deg)

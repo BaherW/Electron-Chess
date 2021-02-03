@@ -29,6 +29,7 @@ export function controlledPieces(color, board) {
     for (let col = 0; col < 8; col++) {
       let selectedPiece = board[row][col][1]
       if (selectedPiece.color === color) {
+
         if (selectedPiece.name === "pawn") {
           let pawnOptions = selectedPiece.getPawnControled(board, color)
 
@@ -42,7 +43,12 @@ export function controlledPieces(color, board) {
         }
 
         else {
-          board[row][col][1].findValidMoves(board)
+          if (selectedPiece.name === "king") {
+            board[row][col][1].countNeighbours(board)
+          }
+          else {
+            board[row][col][1].findValidMoves(board)
+          }
 
           if (board[row][col][1].validMoves.length > 0) {
             if (board[row][col][1].validMoves.length === 1) {
