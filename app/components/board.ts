@@ -1,5 +1,6 @@
 import { emptyPiece, Pieces } from './pieces'
 import { num2chr, includes } from './helper'
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 export class Board {
 
@@ -45,6 +46,7 @@ export function controlledPieces(color, board) {
         else {
           if (selectedPiece.name === "king") {
             board[row][col][1].countNeighbours(board)
+
           }
           else {
             board[row][col][1].findValidMoves(board)
@@ -68,11 +70,27 @@ export function controlledPieces(color, board) {
     }
   }
   let tmp = []
-  return (controlledSquares.filter(function (v) {
-    if (tmp.indexOf(v.toString()) < 0) {
-        tmp.push(v.toString());
-        return v;
-    }
-  }))
+  return controlledSquares;
+}
+
+export function stopCheck() {
+
+` Iterate over all of the checked-color pieces,
+  get their valid moves and, for each valid move check if the next generation of board is out of check.
+  if it is, add to blockingmoves (Array<numbers[]>). Once finished, if blocking moves is not empty`
+
+
+
+// Checkmate -> if blockingmoves = 0
+
+
+// iterate over all of your pieces (you're in check)
+// call validmoves on each piece
+// play each valid move
+// if kingInCheck false append valid move to stopCheck array in each piece object
 
 }
+
+
+
+

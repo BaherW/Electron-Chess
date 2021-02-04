@@ -12,6 +12,7 @@ export abstract class Pieces {
   isPiece: boolean = true;
   validMoves: Array<[any, any]> = [];
 
+
   constructor(i, j, color, icon, name, isPiece = true) {
     this.position = [i, j];
     this.alive = true;
@@ -71,6 +72,7 @@ export class Pawn extends Pieces {
 
   private findValidMoves(board) {
     this.validMoves = [];
+    //Check bounds
 
     let [i, j] = this.position;
     if (this.color === "black") {
@@ -222,6 +224,7 @@ export class King extends Pieces {
   invalidSquares = [];
   
   private countNeighbours(board) {
+    // console.log(this.color)
     //Add all 8 neighbours - the out of bound neighbours into validMoves
     let [y, x] = this.position;
     const possibleX = [1 ,1, 1, 0, 0, -1, -1,-1];
@@ -230,20 +233,22 @@ export class King extends Pieces {
     for (let p = 0; p < possibleX.length; p++) {
       if (!outOfBounds(y + possibleY[p], x + possibleX[p])) {
         if (board[y+possibleY[p]][x+possibleX[p]][1].color != this.color) {
-          console.log([y +possibleY[p], x + possibleX[p]])
+          // console.log([y +possibleY[p], x + possibleX[p]])
           this.validMoves.push([y +possibleY[p], x + possibleX[p]]);
         }
       }
     }
+   
   }
 
   private findValidMoves(board) {
     this.validMoves = [];
     this.countNeighbours(board);
+    // console.log(this.validMoves)
+
 
     if (this.color == "white") {
-      let blackControlledSquares = controlledPieces("black" , board) // we do rec here... black controlled calls white king which calls black control again
-
+      let blackControlledSquares = controlledPieces("black" , board)
       this.validMoves = filterList(this.validMoves, blackControlledSquares );
     }
 
@@ -255,16 +260,16 @@ export class King extends Pieces {
   }
 
 
-  private checkedKing(controledSquares , checkedKing) {
+  private checkedKing(controledSquares) {
     let [y, x] = this.position;
 
     if (includes(controledSquares , this.position)) {
       this.inCheck = true;
-      checkedKing = true;
+      return true
     }
     else {
       this.inCheck = false;
-      checkedKing = false;
+      return false
     }
   }
 
