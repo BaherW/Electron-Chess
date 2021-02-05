@@ -260,7 +260,6 @@ export class King extends Pieces {
 
   private checkedKing(controledSquares) {
     let [y, x] = this.position;
-
     if (includes(controledSquares , this.position)) {
       this.inCheck = true;
       return true

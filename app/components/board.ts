@@ -32,8 +32,12 @@ export function controlledPieces(color, board) {
         if (selectedPiece.name === "pawn") {
           let pawnOptions = selectedPiece.getPawnControled(board, color)
 
+
           if (pawnOptions.length === 1) {
             controlledSquares.push(pawnOptions[0]);
+          }
+          else if (pawnOptions.length === 0) {
+            continue;
           }
           else {
             controlledSquares.push(pawnOptions[0]);
@@ -62,8 +66,6 @@ export function controlledPieces(color, board) {
             }
           }
         }
-
-
       }
     }
   }
