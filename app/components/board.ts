@@ -1,7 +1,5 @@
 import { emptyPiece, Pieces } from './pieces'
-import { num2chr, includes } from './helper'
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
-
+import { num2chr, includes, removeDuplicates } from './helper'
 export class Board {
 
   boardArray: Array<[string, Pieces]> = [];
@@ -69,28 +67,8 @@ export function controlledPieces(color, board) {
       }
     }
   }
-  let tmp = []
-  return controlledSquares;
+  
+  return removeDuplicates(controlledSquares);
 }
-
-export function stopCheck() {
-
-` Iterate over all of the checked-color pieces,
-  get their valid moves and, for each valid move check if the next generation of board is out of check.
-  if it is, add to blockingmoves (Array<numbers[]>). Once finished, if blocking moves is not empty`
-
-
-
-// Checkmate -> if blockingmoves = 0
-
-
-// iterate over all of your pieces (you're in check)
-// call validmoves on each piece
-// play each valid move
-// if kingInCheck false append valid move to stopCheck array in each piece object
-
-}
-
-
 
 

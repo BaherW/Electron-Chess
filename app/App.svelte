@@ -1,7 +1,8 @@
 <script>
-  import { spawnPieces , includes , getKingPos  } from './components/helper'
+  import { spawnPieces , includes , getKingPos, filterList  } from './components/helper'
   import {Board , controlledPieces } from './components/board'
   import {emptyPiece} from './components/pieces'
+import { empty } from 'svelte/internal';
 
 
   var chessBoard = new Board();
@@ -17,49 +18,6 @@
   var rotated = false;
   var stopCheckMoves = []
 
-  //   function nextMove(selectedPiece, board) {
-  //   let results = []
-  //   let [oldY, oldX] = selectedPiece
-  //   let piece = board[oldY][oldX][1];
-  //   //console.log(board[oldY][oldX][1])
-  //   piece.findValidMoves(board);
-  //   let currentValidMoves = piece.validMoves
-  //   console.log("Valid Moves: " + currentValidMoves)
-    
-  //   let whiteControlledSquares = controlledPieces("white", chessBoard.boardArray)
-  //   let blackControlledSquares = controlledPieces("black", chessBoard.boardArray)
-    
-  //   let [kI, jI] = getKingPos(currentMove , chessBoard.boardArray);
-
-  //   if (currentValidMoves.length > 0) {
-  //     for (let p = 0 ; p < currentValidMoves.length; p++) {
-
-  //       let [possY , possX] = currentValidMoves[p]
-        
-  //       board[oldY][oldX][1] = new emptyPiece(oldI , oldJ, "invis" , "/chesspieces/invisible.png", null , false)
-
-  //       if (piece.color === "white") {
-  //         let nextMoveCheck = chessBoard.boardArray[kI][jI][1].checkedKing(blackControlledSquares)
-  //       }
-  //       else {
-  //         let nextMoveCheck = chessBoard.boardArray[kI][jI][1].checkedKing(whiteControlledSquares)
-  //       }
-        
-  //       if (!nextMoveCheck) {
-  //         results.push(currentValidMoves[p])
-  //       }
-  //       board[oldY][oldX][1] = piece;
-  //       board[possY][possX][1] = new emptyPiece(possY , possX, "invis" , "/chesspieces/invisible.png", null , false);
-  //     }
-  //   }
-  //   console.log("kI and jI :" + [kI, jI])
-  //   console.log("old :" + [oldY, oldX])
-
-    
-
-  //   //console.log(results)
-  //   return results;
-  // }
 
 function nextMove(coords, board) {
   let results = []
@@ -70,6 +28,7 @@ function nextMove(coords, board) {
   let piece = board[passedYcoord][passedXcoord][1]
   piece.findValidMoves(board)
   let possibleCheckStops = piece.validMoves;
+  piece.validMoves = [];
   let pieceOldCoords = piece.position
 
   board[passedYcoord][passedXcoord][1] = piece
@@ -78,7 +37,6 @@ function nextMove(coords, board) {
   let blackControlledSquares = controlledPieces("black", chessBoard.boardArray)
     
   let [kI, jI] = getKingPos(currentMove , chessBoard.boardArray);
-  console.log("Initial Valid Moves: " + possibleCheckStops)
   if (possibleCheckStops) {
     if (piece.color === "white") {
       nextMoveCheck1 = chessBoard.boardArray[kI][jI][1].checkedKing(blackControlledSquares)
@@ -86,42 +44,63 @@ function nextMove(coords, board) {
     else {
       nextMoveCheck1 = chessBoard.boardArray[kI][jI][1].checkedKing(whiteControlledSquares)
     }
-    console.log("First: " + nextMoveCheck1)
     for (let p = 0 ; p < possibleCheckStops.length; p++) {
+      let oldPiece =  board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1];
+      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1] = new emptyPiece(possibleCheckStops[p][0] , possibleCheckStops[p][1], "invis" , "/chesspieces/invisible.png", null , false)
       board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1] = piece
-      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1] = possibleCheckStops[p][0];
-      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1] = possibleCheckStops[p][1];
+      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1].position[0] = possibleCheckStops[p][0];
+      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1].position[1] = possibleCheckStops[p][1];
       whiteControlledSquares = controlledPieces("white", chessBoard.boardArray)
       blackControlledSquares = controlledPieces("black", chessBoard.boardArray)
-      console.log(blackControlledSquares)
       if (piece.color === "white") {
         nextMoveCheck2 = chessBoard.boardArray[kI][jI][1].checkedKing(blackControlledSquares)
       }
       else {
         nextMoveCheck2 = chessBoard.boardArray[kI][jI][1].checkedKing(whiteControlledSquares)
-      }
-      console.log("Second: " + nextMoveCheck2)
-      console.log("Tried move: " + possibleCheckStops[p])     
+      }    
       if (nextMoveCheck1 == true && nextMoveCheck2 == false) {
         results.push(possibleCheckStops[p])
       }
       board[passedYcoord][passedXcoord][1] = piece
-      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1] = new emptyPiece(possibleCheckStops[p][0] , possibleCheckStops[p][1], "invis" , "/chesspieces/invisible.png", null , false)  
+      board[passedYcoord][passedXcoord][1].position[0] = passedYcoord;
+      board[passedYcoord][passedXcoord][1].position[1] = passedXcoord;
+      board[possibleCheckStops[p][0]][possibleCheckStops[p][1]][1] = oldPiece  
     }
   }
 
   board[pieceOldCoords[0]][pieceOldCoords[1]][1] = piece
-  console.log("Check Stopping Moves: " + results)
   return results
+}
+
+function  findInvalidMoves(coords, board) {
+  let results = []
+  return results
+}
+
+
+
+function checkMate(color, board) {
+  let checkList = []
+
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      let selectedPiece = board[row][col][1]
+      if (selectedPiece.color === color) {
+        let [checkY, checkX] = selectedPiece.position
+        checkList.push(nextMove([checkY, checkX], board))
+      }
+    }
+  }
+  if (checkList) {
+    return false;
+  }
+  return true;    
 }
   
 
 
   function flipBoard() {
     rotated = !rotated;
-  }
-  if (kingInCheck) {
-    stopCheckMoves = nextMove([1,6], chessBoard.boardArray);
   }
 
   function playerMove(i , j) {
@@ -168,9 +147,6 @@ function nextMove(coords, board) {
   }
 
 
-
-
-
   var selectedPiece = [-1,-1];
   function clickHandler(i, j) {
     playerMove(i , j)
@@ -187,10 +163,14 @@ function nextMove(coords, board) {
     selectedPiece = [i,j]
     piecePicked = true;
     movedPiece = chessBoard.boardArray[i][j][1];
-    chessBoard.boardArray[i][j][1].findValidMoves(chessBoard.boardArray);
 
-
-    //console.log(chessBoard.boardArray[i][j][1].validMoves)
+    if (kingInCheck) {
+      movedPiece.validMoves = nextMove(chessBoard.boardArray[i][j][1].position, chessBoard.boardArray)
+    }
+    else {
+      chessBoard.boardArray[i][j][1].findValidMoves(chessBoard.boardArray);
+      chessBoard.boardArray[i][j][1].validMoves = filterList(chessBoard.boardArray[i][j][1].validMoves, findInvalidMoves([i, j], chessBoard.boardArray))
+    }
 
     oldJ = j;
     oldI = i;
@@ -215,12 +195,11 @@ function nextMove(coords, board) {
     let blackControlledSquares = controlledPieces("black", chessBoard.boardArray)
     let [kI, jI] = getKingPos(currentMove , chessBoard.boardArray);
     kingInCheck =chessBoard.boardArray[kI][jI][1].checkedKing(blackControlledSquares)
-    //console.log([kI, jI])
+    // ADAM HOW DO WE DO THIS FOR WHITE TOO (we need to find out what is the color of piece that was just placed)
 
-    stopCheckMoves = nextMove([1,6], chessBoard.boardArray);
-
-
-
+    // if (checkMate(movedPiece.color, chessBoard.boardArray)) {
+    //     console.log("Checkmate");
+    // }
 
 
   function modifyPiece() {
@@ -345,16 +324,6 @@ function nextMove(coords, board) {
 
 </style>
 
-
-
 <!-- {#if  movedPiece && includes( movedPiece.validMoves , [i,j]) ? 'green_circle' : ''}
 <h1 class="green_circle">Hey</h1>
 {/if} -->
-
-
-
-
-
-
-
-

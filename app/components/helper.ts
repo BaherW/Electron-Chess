@@ -36,6 +36,26 @@ export function filterList(toBeF, filterArray) {
     return toBeF;
 }
 
+export function removeDuplicates(data) {
+    let unique: Array<[any, any]> = [];
+    let found;
+    
+    unique.push(data[0]);
+    for (let i = 0; i < data.length; i++) {
+        found = false
+        for (let j = 0; j < unique.length; j++) {
+            if (arraysEqual(data[i], unique[j])) {
+                found = true;
+            }
+        }
+        if (!found) {
+            unique.push(data[i])
+        }
+    }
+
+    return unique;
+}
+
 export function spawnPieces(chessBoard:Board):Board {
     /* spawn pawns */
     for (let i = 0; i < chessBoard.boardArray[1].length; i++) {

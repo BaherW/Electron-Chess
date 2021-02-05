@@ -243,9 +243,7 @@ export class King extends Pieces {
 
   private findValidMoves(board) {
     this.validMoves = [];
-    this.countNeighbours(board);
-    // console.log(this.validMoves)
-
+    this.countNeighbours(board);    
 
     if (this.color == "white") {
       let blackControlledSquares = controlledPieces("black" , board)
