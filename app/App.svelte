@@ -4,6 +4,7 @@
   import {emptyPiece} from './components/pieces'
 import { empty } from 'svelte/internal';
 import { exit } from 'process';
+import { waitForDebugger } from 'inspector';
 
 
   var chessBoard = new Board();
@@ -181,12 +182,10 @@ function checkMate(color, board) {
 
     if (kingInCheck) {
       if (checkMate(movedPiece.color, chessBoard.boardArray)) {
-        console.log("Checkmate");
         mate = true;
+        location.reload();
       }
     } 
-    
-
 
   function modifyPiece() {
     if (includes(pieceValidMoves, [i,j])) {
@@ -208,27 +207,26 @@ function checkMate(color, board) {
 
 <main>
    <button on:click={flipBoard}>FLIP BOARD HERE CUNT</button>
-   {#if mate}
-    
-   {/if}
    <h1>{kingInCheck}</h1>
   <div class="game-container {rotated ? 'rotated' : ''}">
-    <div class="this_div">
-      {#each chessBoard.boardArray as row, i}
-        <div class="row">
-          {#each row as cell, j}
+    <div class=" {mate ? 'vignette' : ''}">
+      <div class="this_div">
+        {#each chessBoard.boardArray as row, i}
+          <div class="row">
+            {#each row as cell, j}
 
 
               <div on:click={() => {clickHandler(i, j)}}  class="
-  {((j + 1) % 2 === 1 && (i + 1) % 2 === 0) || ((j + 1) % 2 === 0 && (i + 1) % 2 === 1) ? ' white' : 'black'}  cell
-  {(selectedPiece[0] === i && selectedPiece[1] === j) ? 'green' : ' '}" id={chessBoard.boardArray[i][j]}>
-                <img class="  {rotated ? 'rotatedPiece' : ''} bigger"  src={chessBoard.boardArray[i][j][1].icon}/>
-              </div>
-          {/each}
+    {((j + 1) % 2 === 1 && (i + 1) % 2 === 0) || ((j + 1) % 2 === 0 && (i + 1) % 2 === 1) ? ' white' : 'black'}  cell
+    {(selectedPiece[0] === i && selectedPiece[1] === j) ? 'green' : ' '}" id={chessBoard.boardArray[i][j]}>
+                  <img class="  {rotated ? 'rotatedPiece' : ''} bigger"  src={chessBoard.boardArray[i][j][1].icon}/>
+                </div>
+            {/each}
 
 
         </div>
       {/each}
+      </div>
     </div>
   </div>
 </main>
@@ -252,6 +250,11 @@ function checkMate(color, board) {
     -webkit-box-shadow: 0px 0px 15px 4px rgba(0,0,0,0.53);
     box-shadow: 0px 0px 15px 4px rgba(0,0,0,0.53);
     cursor: pointer;
+  }
+
+  .vignette {
+    -webkit-box-shadow: 0px 0px 15px 16px rgba(210,21,21,9);
+    box-shadow: 0px 0px 15px 16px rgba(210,21,21.9);
   }
 
   .row {
